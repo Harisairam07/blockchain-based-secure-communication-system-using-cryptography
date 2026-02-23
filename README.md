@@ -6,33 +6,51 @@
 ![Frontend](https://img.shields.io/badge/Frontend-React-cyan)
 ![Database](https://img.shields.io/badge/Database-MongoDB-darkgreen)
 
+> 🚀 Enterprise-grade secure communication platform integrating modern cryptography with blockchain-based integrity validation and animated system visualization.
+
+---
+
+## 🧠 Problem Statement
+
+Traditional communication systems lack:
+
+- End-to-end cryptographic enforcement  
+- Tamper-proof integrity guarantees  
+- Immutable verification records  
+
+This project solves those issues using AES encryption, SHA-256 hashing, RSA digital signatures, and Ethereum smart contracts.
+
 ---
 
 ## 🚀 Project Overview
 
-A Full-Stack Blockchain-Based Secure Communication System designed to ensure confidential, tamper-proof message transmission using modern cryptographic techniques and Ethereum smart contracts.
+A Full-Stack Blockchain-Based Secure Communication System designed to ensure:
 
-This system integrates:
-
-- 🔐 AES-256 Encryption (Confidentiality)
-- 🧠 SHA-256 Hashing (Integrity)
-- ✍ RSA Digital Signatures (Authentication)
-- ⛓ Ethereum Blockchain Storage (Immutability)
-- 💾 MongoDB Off-Chain Storage (Scalability)
-- 🎬 Animated React-Based Security Visualization (User Interaction)
+- 🔐 Confidentiality (AES-256 Encryption)
+- 🧠 Integrity (SHA-256 Hashing)
+- ✍ Authentication (RSA Digital Signatures)
+- ⛓ Immutability (Blockchain Smart Contract Storage)
+- 💾 Scalability (MongoDB Off-Chain Storage)
+- 🎬 Interactive Visualization (React Animated UI)
 
 ---
 
 ## 🏗 System Architecture
 
 User Input  
-→ AES Encryption  
-→ SHA-256 Hash Generation  
-→ RSA Digital Signature  
-→ Encrypted Message Stored in MongoDB (Off-Chain)  
-→ Hash + Signature Stored on Blockchain (On-Chain)  
-→ Transaction Confirmation  
-→ Verification & Secure Decryption  
+↓  
+AES Encryption  
+↓  
+SHA-256 Hash Generation  
+↓  
+RSA Digital Signature  
+↓  
+Encrypted Message → MongoDB (Off-Chain)  
+Hash + Signature → Ethereum Smart Contract (On-Chain)  
+↓  
+Transaction Confirmation  
+↓  
+Verification & Secure Decryption  
 
 ---
 
@@ -41,10 +59,10 @@ User Input
 ✔ End-to-End Encryption  
 ✔ Blockchain-Based Integrity Validation  
 ✔ Digital Signature Authentication  
-✔ Smart Contract-Based Hash Storage  
+✔ Smart Contract Hash Storage  
 ✔ Real-Time Transaction Visualization  
-✔ Modular Full-Stack Architecture  
-✔ Cybersecurity-Focused Design  
+✔ Modular & Scalable Architecture  
+✔ Cybersecurity-Focused System Design  
 
 ---
 
@@ -70,8 +88,8 @@ User Input
 - MongoDB  
 
 ### 🔹 Cryptography
-- AES-256  
-- SHA-256  
+- AES-256 Encryption  
+- SHA-256 Hashing  
 - RSA Digital Signatures  
 
 ---
@@ -84,7 +102,7 @@ blockchain-based-secure-communication-system-using-cryptography/
 │   ├── server.js  
 │   ├── package.json  
 
-├── frontend/  
+├── secure-ui/  
 │   ├── src/  
 │   ├── package.json  
 
@@ -103,39 +121,40 @@ blockchain-based-secure-communication-system-using-cryptography/
 4. RSA digital signature is created  
 5. Encrypted message is stored in MongoDB  
 6. Hash and signature are written to the blockchain  
-7. Blockchain transaction is confirmed  
+7. Blockchain transaction confirms immutability  
 8. Integrity and authenticity are verified  
 
 ---
 
 ## 🎯 Why This Project Matters
 
-This project demonstrates practical integration of:
+This project demonstrates real-world integration of:
 
-- Cryptography
-- Blockchain Technology
-- Secure Backend Architecture
-- Full-Stack Development
+- Applied Cryptography  
+- Blockchain Systems  
+- Secure Backend Engineering  
+- Full-Stack Development  
 
 Suitable for roles in:
 
 - Cybersecurity Engineering  
 - Blockchain Development  
-- Secure Application Development  
+- Secure Systems Architecture  
 - Full-Stack Engineering  
 
 ---
 
 ## 📌 Future Enhancements
 
-- Public Ethereum Deployment  
-- Receiver-Side Verification Module  
-- Key Management System  
-- Gas Optimization Strategy  
-- Security Attack Simulation  
+- Public Ethereum Testnet Deployment  
+- Receiver-Side Signature Verification  
+- Key Management Infrastructure  
+- Gas Optimization  
+- Attack Simulation & Security Testing  
 
 ---
 
 ## 👨‍💻 Author
 
-Final Year Major Project – Computer Science Engineering (Cybersecurity Specialization)
+Final Year Major Project – Computer Science Engineering  
+Specialization: Cybersecurity
