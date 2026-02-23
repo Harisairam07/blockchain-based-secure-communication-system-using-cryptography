@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Secure Communication System</title>
+    <style>
+        body { font-family: Arial; padding: 20px; background: #f4f4f4; }
+        button { padding: 10px 20px; cursor: pointer; }
+        .log { margin-top: 20px; background: white; padding: 15px; border-radius: 5px; }
+        .step { margin: 10px 0; }
+        .success { color: green; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+<h2>🔐 Blockchain Secure Communication</h2>
+
+<input type="text" id="message" placeholder="Enter message" />
+<button onclick="sendMessage()">Send Secure Message</button>
+
+<div class="log" id="log"></div>
+
+<script>
+async function sendMessage() {
+    const logDiv = document.getElementById("log");
+    logDiv.innerHTML = "Processing...\n";
+
+    const message = document.getElementById("message").value;
+
+    const response = await fetch("http://localhost:3000/send", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message })
+    });
+
+    const data = await response.json();
+
+    logDiv.innerHTML = "";
+
+    for (let i = 0; i < data.steps.length; i++) {
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        logDiv.innerHTML += `<div class="step success">✔ ${data.steps[i]}</div>`;
+    }
+
+    await new Promise(resolve => setTimeout(resolve, 1000));
+
+    logDiv.innerHTML += `
+        <hr>
+        <div><strong>Encrypted Message:</strong> ${data.encryptedMessage}</div>
+        <div><strong>Hash:</strong> ${data.hash}</div>
+        <div><strong>Signature:</strong> ${data.signature.substring(0, 60)}...</div>
+    `;
+}
+</script>
+
+</body>
+</html>
