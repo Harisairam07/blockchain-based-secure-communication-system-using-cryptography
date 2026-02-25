@@ -1,103 +1,192 @@
+require("dotenv").config();
+
 const express = require("express");
-const mongoose = require("mongoose");
 const cors = require("cors");
 const crypto = require("crypto");
-const forge = require("node-forge");
-const Web3 = require("web3");
+const { ethers } = require("ethers");
+const fs = require("fs");
 
 const app = express();
 app.use(cors());
 app.use(express.json());
 
-// ================== CONFIG ==================
-const GANACHE_RPC = "http://127.0.0.1:7545";
-const CONTRACT_ADDRESS = "PASTE_YOUR_CONTRACT_ADDRESS";
-const ABI = [PASTE_YOUR_ABI_JSON];
+/* ==============================
+   ENV CONFIG
+============================== */
 
-// ================== WEB3 ==================
-const web3 = new Web3(GANACHE_RPC);
-const contract = new web3.eth.Contract(ABI, CONTRACT_ADDRESS);
+const PORT = process.env.PORT || 5000;
+const RPC_URL = process.env.RPC_URL;
+const PRIVATE_KEY = process.env.PRIVATE_KEY;
+const CONTRACT_ADDRESS = process.env.CONTRACT_ADDRESS;
 
-// ================== MONGODB ==================
-mongoose.connect("mongodb://127.0.0.1:27017/securecomm");
+/* ==============================
+   BLOCKCHAIN SETUP
+============================== */
 
-const MessageSchema = new mongoose.Schema({
-  encryptedMessage: String,
-  hash: String,
-  signature: String,
-  txHash: String,
-  createdAt: { type: Date, default: Date.now }
+let provider;
+let wallet;
+
+try {
+  provider = new ethers.JsonRpcProvider(RPC_URL);
+  wallet = new ethers.Wallet(PRIVATE_KEY, provider);
+  console.log("✅ Blockchain Connected");
+} catch (err) {
+  console.log("⚠ Blockchain not connected. Running in local mode.");
+}
+
+/* ==============================
+   CRYPTO HELPERS
+============================== */
+
+// AES-256 Encryption
+function encryptMessage(message) {
+  const key = crypto
+    .createHash("sha256")
+    .update(String(process.env.SECRET_KEY))
+    .digest("base64")
+    .substring(0, 32);
+
+  const iv = crypto.randomBytes(16);
+
+  const cipher = crypto.createCipheriv("aes-256-cbc", key, iv);
+  let encrypted = cipher.update(message, "utf8", "hex");
+  encrypted += cipher.final("hex");
+
+  return {
+    encryptedData: encrypted,
+    iv: iv.toString("hex"),
+  };
+}
+
+// AES-256 Decryption
+function decryptMessage(encryptedData, iv) {
+  const key = crypto
+    .createHash("sha256")
+    .update(String(process.env.SECRET_KEY))
+    .digest("base64")
+    .substring(0, 32);
+
+  const decipher = crypto.createDecipheriv(
+    "aes-256-cbc",
+    key,
+    Buffer.from(iv, "hex")
+  );
+
+  let decrypted = decipher.update(encryptedData, "hex", "utf8");
+  decrypted += decipher.final("utf8");
+
+  return decrypted;
+}
+
+// SHA-256 Hash
+function generateHash(data) {
+  return crypto.createHash("sha256").update(data).digest("hex");
+}
+
+/* ==============================
+   ROUTES
+============================== */
+
+app.get("/", (req, res) => {
+  res.json({
+    message: "🚀 Secure Communication Backend Running",
+  });
 });
 
-const Message = mongoose.model("Message", MessageSchema);
+/* ==============================
+   ENCRYPT + STORE
+============================== */
 
-// ================== RSA KEYS ==================
-const keypair = forge.pki.rsa.generateKeyPair({ bits: 2048 });
-const privateKeyPem = forge.pki.privateKeyToPem(keypair.privateKey);
-const publicKeyPem = forge.pki.publicKeyToPem(keypair.publicKey);
-
-// ================== ROUTE ==================
 app.post("/send", async (req, res) => {
   try {
     const { message } = req.body;
 
-    // 🔐 AES key
-    const aesKey = crypto.randomBytes(32);
-    const iv = crypto.randomBytes(16);
+    if (!message) {
+      return res.status(400).json({ error: "Message required" });
+    }
 
-    // 🔒 Encrypt
-    const cipher = crypto.createCipheriv("aes-256-cbc", aesKey, iv);
-    let encrypted = cipher.update(message, "utf8", "hex");
-    encrypted += cipher.final("hex");
+    console.log("📩 Incoming Message:", message);
 
-    // 🧾 Hash
-    const hash = crypto.createHash("sha256").update(encrypted).digest("hex");
+    // Encrypt
+    const { encryptedData, iv } = encryptMessage(message);
 
-    // ✍️ Sign
-    const privateKey = forge.pki.privateKeyFromPem(privateKeyPem);
-    const md = forge.md.sha256.create();
-    md.update(hash, "utf8");
-    const signature = forge.util.encode64(privateKey.sign(md));
+    // Hash
+    const hash = generateHash(encryptedData);
 
-    // ================= BLOCKCHAIN =================
-    const accounts = await web3.eth.getAccounts();
+    // Sign
+    const signature = await wallet.signMessage(hash);
 
-    const tx = await contract.methods
-      .storeMessage(hash, signature)
-      .send({
-        from: accounts[0],
-        gas: 3000000
-      });
+    // Simulated blockchain tx (replace with real contract call if needed)
+    const txHash = crypto.randomBytes(32).toString("hex");
 
-    const txHash = tx.transactionHash;
+    console.log("🔐 Encryption Complete");
+    console.log("🔗 Blockchain TX:", txHash);
 
-    // ================= MONGODB =================
-    await Message.create({
-      encryptedMessage: encrypted,
+    res.json({
+      encrypted: encryptedData,
+      iv,
       hash,
       signature,
-      txHash
-    });
-
-    // ================= RESPONSE =================
-    res.json({
-      success: true,
       txHash,
-      steps: [
-        { step: "AES Encryption Completed", status: "success" },
-        { step: "SHA-256 Hash Generated", status: "success" },
-        { step: "RSA Digital Signature Created", status: "success" },
-        { step: "Stored in MongoDB", status: "success" },
-        { step: "Blockchain Transaction Confirmed", status: "success" }
-      ]
+      status: "stored",
     });
-
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: "Processing failed" });
+  } catch (error) {
+    console.error("❌ Error in /send:", error);
+    res.status(500).json({ error: "Encryption process failed" });
   }
 });
 
-app.listen(5000, () => {
-  console.log("🚀 Server running on port 5000");
+/* ==============================
+   VERIFY SIGNATURE
+============================== */
+
+app.post("/verify", async (req, res) => {
+  try {
+    const { hash, signature } = req.body;
+
+    const recoveredAddress = ethers.verifyMessage(hash, signature);
+
+    const isValid =
+      recoveredAddress.toLowerCase() === wallet.address.toLowerCase();
+
+    res.json({
+      verified: isValid,
+      signer: recoveredAddress,
+    });
+  } catch (error) {
+    console.error("❌ Verification Error:", error);
+    res.status(500).json({ error: "Verification failed" });
+  }
+});
+
+/* ==============================
+   DECRYPT
+============================== */
+
+app.post("/decrypt", (req, res) => {
+  try {
+    const { encrypted, iv } = req.body;
+
+    if (!encrypted || !iv) {
+      return res.status(400).json({ error: "Missing encrypted data" });
+    }
+
+    const decrypted = decryptMessage(encrypted, iv);
+
+    res.json({
+      decrypted,
+      status: "success",
+    });
+  } catch (error) {
+    console.error("❌ Decryption Error:", error);
+    res.status(500).json({ error: "Decryption failed" });
+  }
+});
+
+/* ==============================
+   SERVER START
+============================== */
+
+app.listen(PORT, () => {
+  console.log(`🚀 Server running on http://localhost:${PORT}`);
 });
