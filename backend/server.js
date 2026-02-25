@@ -1,71 +1,103 @@
 const express = require("express");
 const mongoose = require("mongoose");
-const crypto = require("crypto");
 const cors = require("cors");
+const crypto = require("crypto");
+const forge = require("node-forge");
+const Web3 = require("web3");
 
 const app = express();
-app.use(express.json());
 app.use(cors());
+app.use(express.json());
 
-mongoose.connect("mongodb://127.0.0.1:27017/secureComm");
+// ================== CONFIG ==================
+const GANACHE_RPC = "http://127.0.0.1:7545";
+const CONTRACT_ADDRESS = "PASTE_YOUR_CONTRACT_ADDRESS";
+const ABI = [PASTE_YOUR_ABI_JSON];
+
+// ================== WEB3 ==================
+const web3 = new Web3(GANACHE_RPC);
+const contract = new web3.eth.Contract(ABI, CONTRACT_ADDRESS);
+
+// ================== MONGODB ==================
+mongoose.connect("mongodb://127.0.0.1:27017/securecomm");
 
 const MessageSchema = new mongoose.Schema({
   encryptedMessage: String,
   hash: String,
   signature: String,
+  txHash: String,
+  createdAt: { type: Date, default: Date.now }
 });
 
 const Message = mongoose.model("Message", MessageSchema);
 
-// Generate RSA Key Pair (once)
-const { publicKey, privateKey } = crypto.generateKeyPairSync("rsa", {
-  modulusLength: 2048,
-});
+// ================== RSA KEYS ==================
+const keypair = forge.pki.rsa.generateKeyPair({ bits: 2048 });
+const privateKeyPem = forge.pki.privateKeyToPem(keypair.privateKey);
+const publicKeyPem = forge.pki.publicKeyToPem(keypair.publicKey);
 
-// AES Key
-const AES_KEY = crypto.randomBytes(32);
-
+// ================== ROUTE ==================
 app.post("/send", async (req, res) => {
   try {
     const { message } = req.body;
 
-    // AES Encryption
+    // 🔐 AES key
+    const aesKey = crypto.randomBytes(32);
     const iv = crypto.randomBytes(16);
-    const cipher = crypto.createCipheriv("aes-256-cbc", AES_KEY, iv);
+
+    // 🔒 Encrypt
+    const cipher = crypto.createCipheriv("aes-256-cbc", aesKey, iv);
     let encrypted = cipher.update(message, "utf8", "hex");
     encrypted += cipher.final("hex");
 
-    const encryptedMessage = iv.toString("hex") + ":" + encrypted;
+    // 🧾 Hash
+    const hash = crypto.createHash("sha256").update(encrypted).digest("hex");
 
-    // SHA-256 Hash
-    const hash = crypto.createHash("sha256")
-      .update(message)
-      .digest("hex");
+    // ✍️ Sign
+    const privateKey = forge.pki.privateKeyFromPem(privateKeyPem);
+    const md = forge.md.sha256.create();
+    md.update(hash, "utf8");
+    const signature = forge.util.encode64(privateKey.sign(md));
 
-    // RSA Signature
-    const signature = crypto.sign(
-      "sha256",
-      Buffer.from(hash),
-      privateKey
-    ).toString("hex");
+    // ================= BLOCKCHAIN =================
+    const accounts = await web3.eth.getAccounts();
 
-    // Save to DB
-    const newMessage = new Message({
-      encryptedMessage,
+    const tx = await contract.methods
+      .storeMessage(hash, signature)
+      .send({
+        from: accounts[0],
+        gas: 3000000
+      });
+
+    const txHash = tx.transactionHash;
+
+    // ================= MONGODB =================
+    await Message.create({
+      encryptedMessage: encrypted,
       hash,
       signature,
+      txHash
     });
 
-    await newMessage.save();
-
-    res.json({ encryptedMessage, hash, signature });
+    // ================= RESPONSE =================
+    res.json({
+      success: true,
+      txHash,
+      steps: [
+        { step: "AES Encryption Completed", status: "success" },
+        { step: "SHA-256 Hash Generated", status: "success" },
+        { step: "RSA Digital Signature Created", status: "success" },
+        { step: "Stored in MongoDB", status: "success" },
+        { step: "Blockchain Transaction Confirmed", status: "success" }
+      ]
+    });
 
   } catch (err) {
     console.error(err);
-    res.status(500).send("Error processing secure transaction");
+    res.status(500).json({ error: "Processing failed" });
   }
 });
 
-app.listen(3000, () =>
-  console.log("🔐 Secure Server running at http://localhost:3000")
-);
+app.listen(5000, () => {
+  console.log("🚀 Server running on port 5000");
+});

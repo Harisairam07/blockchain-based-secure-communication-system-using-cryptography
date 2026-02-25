@@ -1,42 +1,157 @@
-#root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
+@import url("https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@300;400;600&family=JetBrains+Mono:wght@400;500&display=swap");
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background: radial-gradient(circle at top left, #0f172a, #000000 70%);
+  color: #f8fafc;
+  font-family: "Inter", sans-serif;
+  overflow-x: hidden;
+}
+
+/* Glow Background */
+
+body::before,
+body::after {
+  content: "";
+  position: fixed;
+  width: 450px;
+  height: 450px;
+  border-radius: 50%;
+  filter: blur(130px);
+  z-index: -1;
+}
+
+body::before {
+  background: #7c3aed;
+  top: -120px;
+  left: -120px;
+}
+
+body::after {
+  background: #06b6d4;
+  bottom: -120px;
+  right: -120px;
+}
+
+.main-container {
+  min-height: 100vh;
+  padding: 80px;
+}
+
+.home-layout,
+.two-col-layout {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 80px;
+}
+
+.dog-section {
+  flex: 1;
   text-align: center;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+.dog-img {
+  width: 420px;
+  filter: drop-shadow(0 0 40px rgba(139, 92, 246, 0.5));
 }
 
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.data-section {
+  flex: 1;
+  background: rgba(17, 25, 40, 0.75);
+  backdrop-filter: blur(20px);
+  border-radius: 24px;
+  padding: 50px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 20px 80px rgba(0, 0, 0, 0.6);
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
+.project-title {
+  font-family: "Playfair Display", serif;
+  font-size: 26px;
+  font-weight: 700;
+  text-transform: uppercase;
+  background: linear-gradient(90deg, #ffffff, #c084fc);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.project-subtitle {
+  font-family: "Playfair Display", serif;
+  font-size: 16px;
+  color: #94a3b8;
+  letter-spacing: 2px;
+  margin-bottom: 25px;
+}
+
+.divider {
+  width: 60px;
+  height: 3px;
+  background: linear-gradient(90deg, #6366f1, #ec4899);
+  margin: 20px 0 30px;
+  border-radius: 10px;
+}
+
+.app-heading {
+  margin-bottom: 20px;
+  color: #a5f3fc;
 }
 
 .card {
-  padding: 2em;
+  font-family: "JetBrains Mono", monospace;
+  background: rgba(15, 23, 42, 0.8);
+  border-radius: 18px;
+  padding: 20px;
+  margin-bottom: 20px;
+  border: 1px solid rgba(139, 92, 246, 0.3);
+  word-break: break-all;
 }
 
-.read-the-docs {
-  color: #888;
+input {
+  width: 100%;
+  padding: 16px;
+  border-radius: 18px;
+  border: none;
+  background: rgba(30, 41, 59, 0.8);
+  color: white;
+  margin-bottom: 25px;
+  font-size: 15px;
+}
+
+button {
+  padding: 16px 40px;
+  border-radius: 50px;
+  border: none;
+  font-weight: 600;
+  cursor: pointer;
+  background: linear-gradient(135deg, #6366f1, #8b5cf6, #ec4899);
+  color: white;
+  transition: 0.3s ease;
+  box-shadow: 0 15px 40px rgba(139, 92, 246, 0.4);
+}
+
+button:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 20px 60px rgba(236, 72, 153, 0.6);
+}
+
+.welcome-text {
+  margin-top: 30px;
+  color: #cbd5e1;
+}
+
+@media (max-width: 1000px) {
+  .home-layout,
+  .two-col-layout {
+    flex-direction: column;
+  }
+
+  .dog-img {
+    width: 280px;
+  }
 }
