@@ -18,12 +18,27 @@ const { getSecurityState } = require('./services/securityStateService');
 const { emitRealtimeMetrics } = require('./services/realtimeMetricsService');
 const { ensureDefaultAdmin } = require('./services/seedService');
 
+function getAllowedOrigins() {
+  const fallback = ['http://localhost:5173'];
+  const raw = process.env.FRONTEND_URL;
+  if (!raw) return fallback;
+
+  const parsed = raw
+    .split(',')
+    .map((entry) => entry.trim())
+    .filter(Boolean);
+
+  return parsed.length ? parsed : fallback;
+}
+
+const allowedOrigins = getAllowedOrigins();
+
 const app = express();
 const server = http.createServer(app);
 
 const io = new Server(server, {
   cors: {
-    origin: process.env.FRONTEND_URL || 'http://localhost:5173',
+    origin: allowedOrigins,
     credentials: true
   }
 });
@@ -49,7 +64,7 @@ io.on('connection', (socket) => {
 
 app.use(
   cors({
-    origin: process.env.FRONTEND_URL || 'http://localhost:5173',
+    origin: allowedOrigins,
     credentials: true
   })
 );
