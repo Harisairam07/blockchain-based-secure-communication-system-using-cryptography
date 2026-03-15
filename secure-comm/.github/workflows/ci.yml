@@ -1,0 +1,41 @@
+name: secure-comm-ci
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Build gateway
+        run: |
+          cd secure-comm/backend/gateway
+          npm install
+      - name: Build auth-service
+        run: |
+          cd secure-comm/services/auth-service
+          npm install
+      - name: Build messaging-service
+        run: |
+          cd secure-comm/services/messaging-service
+          npm install
+      - name: Build crypto-service
+        run: |
+          cd secure-comm/services/crypto-service
+          npm install
+      - name: Build blockchain-service
+        run: |
+          cd secure-comm/services/blockchain-service
+          npm install
+      - name: Build frontend
+        run: |
+          cd secure-comm/frontend
+          npm install
+          npm run build

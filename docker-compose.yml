@@ -1,0 +1,35 @@
+version: '3.9'
+services:
+  mongo:
+    image: mongo:7
+    container_name: secure_comm_mongo
+    restart: unless-stopped
+    ports:
+      - '27017:27017'
+    volumes:
+      - mongo_data:/data/db
+
+  backend:
+    build: ./backend
+    container_name: secure_comm_backend
+    restart: unless-stopped
+    env_file:
+      - ./backend/.env
+    ports:
+      - '5000:5000'
+    depends_on:
+      - mongo
+
+  frontend:
+    build: ./frontend
+    container_name: secure_comm_frontend
+    restart: unless-stopped
+    env_file:
+      - ./frontend/.env
+    ports:
+      - '5173:5173'
+    depends_on:
+      - backend
+
+volumes:
+  mongo_data:

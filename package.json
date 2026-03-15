@@ -1,0 +1,20 @@
+{
+  "name": "blockchain-secure-communication-system",
+  "private": true,
+  "version": "1.0.0",
+  "scripts": {
+    "clean-ports": "npx kill-port 5000 5173 5174 5175 7545 || exit 0",
+    "frontend": "npm --prefix frontend run dev",
+    "backend": "npm --prefix backend run start",
+    "blockchain": "ganache --deterministic --server.host 127.0.0.1 --server.port 7545",
+    "backend:wait": "wait-on tcp:127.0.0.1:7545 && npm run backend",
+    "start-all": "npm run clean-ports && concurrently --kill-others-on-fail --names \"CHAIN,API,UI\" --prefix-colors \"yellow,cyan,magenta\" \"npm run blockchain\" \"npm run backend:wait\" \"npm run frontend\"",
+    "setup": "npm --prefix frontend install && npm --prefix backend install && npm --prefix blockchain install"
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.1",
+    "ganache": "^7.9.2",
+    "kill-port": "^2.0.1",
+    "wait-on": "^8.0.3"
+  }
+}
