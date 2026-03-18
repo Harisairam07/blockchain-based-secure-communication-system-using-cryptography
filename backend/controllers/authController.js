@@ -18,6 +18,14 @@ function signToken(userId, role) {
   return jwt.sign({ userId, role }, process.env.JWT_SECRET, { expiresIn: '1d' });
 }
 
+function getDefaultAdminEmail() {
+  return (process.env.DEFAULT_ADMIN_EMAIL || 'admin@gmail.com').toLowerCase();
+}
+
+function isConfiguredDefaultAdmin(user) {
+  return user?.role === 'admin' && user?.email === getDefaultAdminEmail();
+}
+
 async function register(req, res) {
   try {
     const { name, email, password, role } = req.body;
@@ -83,14 +91,20 @@ async function login(req, res) {
       return res.status(401).json({ error: attempt.blocked ? 'Too many failed attempts' : 'Invalid credentials' });
     }
 
-    if (user.isBlocked) {
-      return res.status(403).json({ error: 'Account blocked by security policy', reason: user.blockedReason || 'security_policy' });
-    }
-
     const isValid = await bcrypt.compare(password, user.passwordHash);
     if (!isValid) {
       const attempt = await registerLoginFailure(req, email.toLowerCase());
       return res.status(401).json({ error: attempt.blocked ? 'Too many failed attempts' : 'Invalid credentials' });
+    }
+
+    if (user.isBlocked) {
+      if (isConfiguredDefaultAdmin(user)) {
+        user.isBlocked = false;
+        user.blockedReason = null;
+        user.blockedAt = null;
+      } else {
+        return res.status(403).json({ error: 'Account blocked by security policy', reason: user.blockedReason || 'security_policy' });
+      }
     }
 
     resetAttempts(req.ip, email.toLowerCase());

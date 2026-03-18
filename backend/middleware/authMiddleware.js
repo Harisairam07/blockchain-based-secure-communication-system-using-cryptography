@@ -1,6 +1,10 @@
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 
+function getDefaultAdminEmail() {
+  return (process.env.DEFAULT_ADMIN_EMAIL || 'admin@gmail.com').toLowerCase();
+}
+
 async function authMiddleware(req, res, next) {
   try {
     const authHeader = req.headers.authorization;
@@ -17,7 +21,15 @@ async function authMiddleware(req, res, next) {
     }
 
     if (user.isBlocked) {
-      return res.status(403).json({ error: 'User is blocked', reason: user.blockedReason || 'security_policy' });
+      if (user.role === 'admin' && user.email === getDefaultAdminEmail()) {
+        user.isBlocked = false;
+        user.blockedReason = null;
+        user.blockedAt = null;
+        user.failedLoginCount = 0;
+        await user.save();
+      } else {
+        return res.status(403).json({ error: 'User is blocked', reason: user.blockedReason || 'security_policy' });
+      }
     }
 
     req.user = user;

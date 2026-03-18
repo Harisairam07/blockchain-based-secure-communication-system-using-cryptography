@@ -1,3 +1,5 @@
+const path = require('path');
+require('dotenv').config({ path: path.resolve(__dirname, '../.env') });
 require('dotenv').config();
 
 const express = require('express');
@@ -137,13 +139,29 @@ app.use((error, req, res, next) => {
 
 const PORT = process.env.PORT || 5000;
 const MONGODB_URI = process.env.MONGODB_URI || process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/secure_comm';
+const MONGODB_FALLBACK_URI = process.env.MONGODB_FALLBACK_URI || 'mongodb://127.0.0.1:27017/secure_comm';
 
-mongoose
-  .connect(MONGODB_URI)
+async function connectToMongo() {
+  try {
+    await mongoose.connect(MONGODB_URI);
+  } catch (error) {
+    const canFallback = MONGODB_FALLBACK_URI && MONGODB_FALLBACK_URI !== MONGODB_URI;
+    if (!canFallback) {
+      throw error;
+    }
+
+    console.warn(`Primary MongoDB connection failed, retrying with fallback URI: ${error.message}`);
+    await mongoose.connect(MONGODB_FALLBACK_URI);
+  }
+}
+
+connectToMongo()
   .then(async () => {
     const seeded = await ensureDefaultAdmin();
     if (seeded.created) {
       console.log(`Default admin user created: ${seeded.email} / admin`);
+    } else if (seeded.recovered) {
+      console.log(`Default admin user recovered/unblocked: ${seeded.email}`);
     }
     server.listen(PORT, () => {
       console.log(`Secure Communication API running at http://localhost:${PORT}`);

@@ -8,7 +8,27 @@ async function ensureDefaultAdmin() {
   const defaultName = process.env.DEFAULT_ADMIN_NAME || 'Administrator';
 
   const existing = await User.findOne({ email: defaultEmail });
-  if (existing) return { created: false, email: defaultEmail };
+  if (existing) {
+    const updates = {};
+
+    // Recovery path: prevent permanent lockout of the configured default admin.
+    if (existing.isBlocked) {
+      updates.isBlocked = false;
+      updates.blockedReason = null;
+      updates.blockedAt = null;
+    }
+
+    if (existing.failedLoginCount && existing.failedLoginCount > 0) {
+      updates.failedLoginCount = 0;
+    }
+
+    if (Object.keys(updates).length > 0) {
+      await User.updateOne({ _id: existing._id }, { $set: updates });
+      return { created: false, recovered: true, email: defaultEmail };
+    }
+
+    return { created: false, recovered: false, email: defaultEmail };
+  }
 
   const passwordHash = await bcrypt.hash(defaultPassword, 12);
   const { publicKey, privateKey } = generateRsaKeyPair();
@@ -25,7 +45,7 @@ async function ensureDefaultAdmin() {
     keyIv: iv
   });
 
-  return { created: true, email: defaultEmail };
+  return { created: true, recovered: false, email: defaultEmail };
 }
 
 module.exports = { ensureDefaultAdmin };
