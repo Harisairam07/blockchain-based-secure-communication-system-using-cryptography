@@ -51,4 +51,8 @@ export const adminApi = {
   emergencyShutdown: (payload) => api.post('/admin/emergency-shutdown', payload)
 };
 
+export const aiApi = {
+  chat: (payload) => api.post('/ai/chat', payload)
+};
+
 export default api;

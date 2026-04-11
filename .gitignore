@@ -6,6 +6,8 @@ secure-ui/node_modules/
 # Environment files
 .env
 .env.*
+!/.env.example
+!/frontend/.env.example
 
 # Logs
 logs

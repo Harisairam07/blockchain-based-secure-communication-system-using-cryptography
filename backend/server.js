@@ -15,6 +15,7 @@ const messageRoutes = require('./routes/messageRoutes');
 const fileRoutes = require('./routes/fileRoutes');
 const blockchainRoutes = require('./routes/blockchainRoutes');
 const adminRoutes = require('./routes/adminRoutes');
+const aiRoutes = require('./routes/aiRoutes');
 const { logAttack } = require('./services/attackDetectionService');
 const { getSecurityState } = require('./services/securityStateService');
 const { emitRealtimeMetrics } = require('./services/realtimeMetricsService');
@@ -136,6 +137,7 @@ app.use('/api/files', fileRoutes);
 app.use('/api/file', fileRoutes);
 app.use('/api/blockchain', blockchainRoutes);
 app.use('/api/admin', adminRoutes);
+app.use('/api/ai', aiRoutes);
 
 app.use((error, req, res, next) => {
   res.status(500).json({ error: 'Internal server error', details: error.message });
