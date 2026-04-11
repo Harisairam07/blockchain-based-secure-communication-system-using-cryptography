@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { LockKeyhole, Shield } from 'lucide-react';
 import { authApi } from '../services/api';
+import { createDemoUser, demoCredentials, isDemoMode } from '../services/runtimeConfig';
 
 export default function Login() {
   const [email, setEmail] = useState('');
@@ -12,6 +13,20 @@ export default function Login() {
 
   const submit = async (e) => {
     e.preventDefault();
+
+    if (isDemoMode) {
+      if (email.toLowerCase() === demoCredentials.email.toLowerCase() && password === demoCredentials.password) {
+        const user = createDemoUser();
+        localStorage.setItem('token', 'demo-session');
+        localStorage.setItem('user', JSON.stringify(user));
+        navigate('/dashboard');
+        return;
+      }
+
+      setError('Use the demo admin credentials for this GitHub Pages deployment.');
+      return;
+    }
+
     try {
       const { data } = await authApi.login({ email, password, hiddenField: '' });
       localStorage.setItem('token', data.token);
@@ -31,6 +46,11 @@ export default function Login() {
           <h1 className="font-display text-2xl font-semibold">Secure Access Portal</h1>
           <p className="text-sm text-cyber-muted">Blockchain-based secure communication</p>
         </div>
+        {isDemoMode && (
+          <div className="rounded-lg border border-emerald-400/30 bg-emerald-500/10 p-3 text-xs text-emerald-100">
+            Demo login: {demoCredentials.email} / {demoCredentials.password}
+          </div>
+        )}
         <input className="input" placeholder="Email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
         <div className="relative">
           <LockKeyhole size={14} className="absolute left-3 top-3 text-cyber-muted" />

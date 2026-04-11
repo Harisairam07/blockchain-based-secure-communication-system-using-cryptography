@@ -7,6 +7,7 @@ import CryptoPipelineVisualizer from '../components/visualization/CryptoPipeline
 import RoboDogAnimation from '../components/animations/RoboDogAnimation';
 import NeuralCoreAnimation from '../components/animations/NeuralCoreAnimation';
 import { messageApi } from '../services/api';
+import { isDemoMode, socketUrl } from '../services/runtimeConfig';
 
 const EncryptionPipeline3D = lazy(() => import('../components/visualization/EncryptionPipeline3D'));
 
@@ -30,13 +31,17 @@ export default function SecureChat() {
 
   const socket = useMemo(
     () =>
-      io(import.meta.env.VITE_SOCKET_URL || 'http://localhost:5000', {
+      socketUrl
+        ? io(socketUrl, {
         transports: ['websocket', 'polling']
-      }),
+      })
+        : null,
     []
   );
 
   useEffect(() => {
+    if (!socket) return undefined;
+
     socket.emit('join', currentUser.id);
     socket.on('receive_message', (payload) => {
       setTyping(true);
@@ -50,6 +55,20 @@ export default function SecureChat() {
   }, [socket, currentUser.id]);
 
   useEffect(() => {
+    if (isDemoMode) {
+      setMessages([
+        {
+          _id: 'demo-message',
+          sender: { _id: 'demo-admin', name: 'System' },
+          receiver: currentUser.id,
+          preview: 'Demo mode is active. Deploy the backend and set VITE_API_BASE to enable live messaging.',
+          createdAt: new Date().toISOString(),
+          encrypted: true
+        }
+      ]);
+      return;
+    }
+
     messageApi
       .inbox()
       .then((res) => setMessages(res?.data?.messages || []))
@@ -67,6 +86,26 @@ export default function SecureChat() {
     const text = message;
 
     try {
+      if (isDemoMode) {
+        setMessages((prev) => [
+          ...prev,
+          {
+            _id: `demo-${Date.now()}`,
+            sender: { _id: currentUser.id, name: currentUser.name || 'Demo Admin' },
+            receiver: receiverId,
+            preview: text,
+            createdAt: new Date().toISOString(),
+            encrypted: true
+          }
+        ]);
+        setLastTx({
+          blockchainTxHash: 'demo-blockchain-proof',
+          verificationStatus: 'simulated'
+        });
+        setMessage('');
+        return;
+      }
+
       const { data } = await messageApi.send({ receiverId, message: text, signingPassphrase: passphrase });
       setLastTx(data.data);
       setMessage('');

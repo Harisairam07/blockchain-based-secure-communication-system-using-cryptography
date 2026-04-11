@@ -21,7 +21,11 @@ const { emitRealtimeMetrics } = require('./services/realtimeMetricsService');
 const { ensureDefaultAdmin } = require('./services/seedService');
 
 function getAllowedOrigins() {
-  const fallback = ['http://localhost:5173'];
+  const fallback = [
+    'http://localhost:5173',
+    'https://harisairam07.github.io',
+    'https://harisairam07.github.io/blockchain-based-secure-communication-system-using-cryptography'
+  ];
   const raw = process.env.FRONTEND_URL;
   if (!raw) return fallback;
 
@@ -159,7 +163,7 @@ connectToMongo()
   .then(async () => {
     const seeded = await ensureDefaultAdmin();
     if (seeded.created) {
-      console.log(`Default admin user created: ${seeded.email} / admin`);
+      console.log(`Default admin user created: ${seeded.email}`);
     } else if (seeded.recovered) {
       console.log(`Default admin user recovered/unblocked: ${seeded.email}`);
     }

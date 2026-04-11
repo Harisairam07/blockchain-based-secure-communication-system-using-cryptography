@@ -3,6 +3,7 @@ import { Area, AreaChart, CartesianGrid, Line, LineChart, ResponsiveContainer, T
 import { Activity, Blocks, ShieldAlert, Users } from 'lucide-react';
 import { io } from 'socket.io-client';
 import { authApi, messageApi } from '../services/api';
+import { isDemoMode, socketUrl } from '../services/runtimeConfig';
 import NeonPulseCard from '../components/visualization/NeonPulseCard';
 import RoboDogAnimation from '../components/animations/RoboDogAnimation';
 import NeuralCoreAnimation from '../components/animations/NeuralCoreAnimation';
@@ -47,6 +48,20 @@ export default function Dashboard() {
   });
 
   useEffect(() => {
+    if (isDemoMode) {
+      const user = JSON.parse(localStorage.getItem('user') || 'null');
+      setStats((s) => ({
+        ...s,
+        user,
+        messages: 12,
+        verified: 12,
+        attacks: 0,
+        activeUsers: 1,
+        systemHealth: 'demo'
+      }));
+      return;
+    }
+
     const load = async () => {
       try {
         const [me, telemetry] = await Promise.all([authApi.me(), messageApi.stats()]);
@@ -68,7 +83,9 @@ export default function Dashboard() {
   }, []);
 
   useEffect(() => {
-    const socket = io(import.meta.env.VITE_SOCKET_URL || 'http://localhost:5000', {
+    if (!socketUrl) return undefined;
+
+    const socket = io(socketUrl, {
       transports: ['websocket', 'polling']
     });
 

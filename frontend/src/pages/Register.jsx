@@ -6,7 +6,7 @@ import { authApi } from '../services/api';
 import { passwordStrength, strengthLabel } from '../services/cryptoService';
 
 export default function Register() {
-  const [form, setForm] = useState({ name: '', email: '', password: '', role: 'user' });
+  const [form, setForm] = useState({ name: '', email: '', password: '' });
   const [error, setError] = useState('');
   const navigate = useNavigate();
   const score = useMemo(() => passwordStrength(form.password), [form.password]);
@@ -31,10 +31,6 @@ export default function Register() {
         <input className="input" placeholder="Name" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} required />
         <input className="input" placeholder="Email" type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} required />
         <input className="input" placeholder="Password" type="password" value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} required />
-        <select className="input" value={form.role} onChange={(e) => setForm({ ...form, role: e.target.value })}>
-          <option value="user">User</option>
-          <option value="admin">Admin</option>
-        </select>
         <div className="glass rounded-xl p-3 text-xs text-cyber-muted">Password strength: <span className="text-cyber-accent">{strengthLabel(score)}</span></div>
         {error && <p className="text-sm text-red-400">{error}</p>}
         <button className="btn-primary w-full">Provision Account</button>

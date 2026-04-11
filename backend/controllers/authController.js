@@ -28,7 +28,7 @@ function isConfiguredDefaultAdmin(user) {
 
 async function register(req, res) {
   try {
-    const { name, email, password, role } = req.body;
+    const { name, email, password } = req.body;
 
     if (!name || !email || !password) {
       return res.status(400).json({ error: 'name, email and password are required' });
@@ -47,7 +47,7 @@ async function register(req, res) {
       name,
       email: email.toLowerCase(),
       passwordHash,
-      role: role === 'admin' ? 'admin' : 'user',
+      role: 'user',
       publicKey,
       encryptedPrivateKey,
       keySalt: salt,
