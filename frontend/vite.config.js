@@ -3,6 +3,9 @@ import react from '@vitejs/plugin-react';
 
 export default defineConfig({
   plugins: [react()],
+  base: process.env.GITHUB_PAGES === 'true'
+    ? '/blockchain-based-secure-communication-system-using-cryptography/'
+    : '/',
   server: {
     port: 5173,
     strictPort: false,

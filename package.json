@@ -9,7 +9,8 @@
     "blockchain": "ganache --deterministic --server.host 127.0.0.1 --server.port 7545",
     "backend:wait": "wait-on tcp:127.0.0.1:7545 && npm run backend",
     "start-all": "npm run clean-ports && concurrently --kill-others-on-fail --names \"CHAIN,API,UI\" --prefix-colors \"yellow,cyan,magenta\" \"npm run blockchain\" \"npm run backend:wait\" \"npm run frontend\"",
-    "setup": "npm --prefix frontend install && npm --prefix backend install && npm --prefix blockchain install"
+    "setup": "npm --prefix frontend install && npm --prefix backend install && npm --prefix blockchain install",
+    "test": "echo \"No tests configured\""
   },
   "devDependencies": {
     "concurrently": "^9.2.1",
