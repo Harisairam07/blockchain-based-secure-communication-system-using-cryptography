@@ -4,6 +4,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import Navbar from './components/Navbar';
 import Sidebar from './components/Sidebar';
 import ErrorBoundary from './components/ErrorBoundary';
+import JohnAssistant from './components/JohnAssistant';
 
 const Login = lazy(() => import('./pages/Login'));
 const Register = lazy(() => import('./pages/Register'));
@@ -25,7 +26,7 @@ function Shell() {
   const location = useLocation();
 
   return (
-    <div className="min-h-screen bg-cyber-bg">
+    <div className="min-h-screen bg-cyber-bg john-shell-host">
       <Sidebar open={open} setOpen={setOpen} />
       <div className="lg:pl-72">
         <Navbar onMenu={() => setOpen(true)} />
@@ -47,6 +48,7 @@ function Shell() {
           </AnimatePresence>
         </main>
       </div>
+      <JohnAssistant />
     </div>
   );
 }

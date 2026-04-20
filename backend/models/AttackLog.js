@@ -6,7 +6,18 @@ const AttackLogSchema = new mongoose.Schema(
     email: { type: String, default: null },
     type: {
       type: String,
-      enum: ['honeypot', 'bruteforce', 'invalid_login', 'rate_limit', 'abnormal_messaging', 'suspicious_ip', 'emergency_shutdown'],
+      enum: [
+        'honeypot',
+        'bruteforce',
+        'invalid_login',
+        'rate_limit',
+        'abnormal_messaging',
+        'suspicious_ip',
+        'emergency_shutdown',
+        'john_voice_auth',
+        'blockchain_tamper',
+        'intrusion_detected'
+      ],
       required: true
     },
     userAgent: String,

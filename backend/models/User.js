@@ -13,6 +13,13 @@ const UserSchema = new mongoose.Schema(
     lastLoginAt: Date,
     failedLoginCount: { type: Number, default: 0 },
     isLockedUntil: Date,
+    johnVoiceProfile: {
+      vector: { type: [Number], default: undefined },
+      samples: { type: Number, default: 0 },
+      updatedAt: Date
+    },
+    johnFailedVoiceAttempts: { type: Number, default: 0 },
+    johnLockedUntil: Date,
     isBlocked: { type: Boolean, default: false, index: true },
     blockedReason: { type: String, default: null },
     blockedAt: { type: Date, default: null }

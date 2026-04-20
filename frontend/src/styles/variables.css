@@ -1,0 +1,39 @@
+:root {
+  /* JOHN Colors */
+  --john-idle: #00ff88;
+  --john-active: #00bfff;
+  --john-speaking: #ffd700;
+  --john-alert: #ff2222;
+  --john-locked: #444444;
+
+  /* Background */
+  --bg-primary: #050a14;
+  --bg-secondary: #0a1020;
+  --bg-panel: rgba(10, 20, 40, 0.85);
+  --bg-glass: rgba(0, 191, 255, 0.05);
+
+  /* Text */
+  --text-primary: #e0f0ff;
+  --text-secondary: #7aa8cc;
+  --text-accent: #00bfff;
+
+  /* Borders */
+  --border-glow: 0 0 12px rgba(0, 191, 255, 0.4);
+  --border-alert: 0 0 12px rgba(255, 34, 34, 0.6);
+
+  /* Font */
+  --font-hud: "Orbitron", "Rajdhani", monospace;
+  --font-body: "Inter", "Segoe UI", sans-serif;
+
+  /* Animations */
+  --transition-fast: 0.2s ease;
+  --transition-med: 0.4s ease;
+  --transition-slow: 0.8s ease;
+
+  /* Compatibility tokens used by existing Tailwind utility mapping */
+  --cyber-bg: #0f172a;
+  --cyber-panel: #1e293b;
+  --cyber-accent: #22c55e;
+  --cyber-alert: #ef4444;
+  --cyber-glow: #10b981;
+}

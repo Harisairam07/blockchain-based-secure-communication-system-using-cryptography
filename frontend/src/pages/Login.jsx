@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { LockKeyhole, Shield } from 'lucide-react';
@@ -10,6 +10,14 @@ export default function Login() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const notice = sessionStorage.getItem('auth_notice');
+    if (notice) {
+      setError(notice);
+      sessionStorage.removeItem('auth_notice');
+    }
+  }, []);
 
   const submit = async (e) => {
     e.preventDefault();

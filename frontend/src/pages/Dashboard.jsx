@@ -5,8 +5,8 @@ import { io } from 'socket.io-client';
 import { authApi, messageApi } from '../services/api';
 import { isDemoMode, socketUrl } from '../services/runtimeConfig';
 import NeonPulseCard from '../components/visualization/NeonPulseCard';
-import RoboDogAnimation from '../components/animations/RoboDogAnimation';
-import NeuralCoreAnimation from '../components/animations/NeuralCoreAnimation';
+import RoboDog from '../components/RoboDog';
+import NeuralCore from '../components/NeuralCore';
 import ThreatRadarAnimation from '../components/animations/ThreatRadarAnimation';
 import LiveMetricsPulseChart from '../components/visualization/LiveMetricsPulseChart';
 
@@ -176,14 +176,14 @@ export default function Dashboard() {
       <section className="panel p-5">
         <h3 className="mb-4 font-display text-sm font-semibold">Security Companion</h3>
         <p className="mb-4 text-xs text-cyber-muted">Visual heartbeat for active secure-session monitoring.</p>
-        <RoboDogAnimation />
+        <RoboDog state="idle" />
       </section>
 
       <div className="grid gap-4 xl:grid-cols-2">
         <section className="panel p-5">
           <h3 className="mb-3 font-display text-sm font-semibold">AI Neural Core</h3>
           <p className="mb-4 text-xs text-cyber-muted">Adaptive intelligence engine modeling live session behavior.</p>
-          <NeuralCoreAnimation />
+          <NeuralCore state="idle" />
         </section>
 
         <section className="panel p-5">

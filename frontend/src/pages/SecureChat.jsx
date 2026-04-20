@@ -4,8 +4,8 @@ import { KeyRound, Lock, Send, UserRound } from 'lucide-react';
 import ChatWindow from '../components/ChatWindow';
 import BlockchainVerification from '../components/BlockchainVerification';
 import CryptoPipelineVisualizer from '../components/visualization/CryptoPipelineVisualizer';
-import RoboDogAnimation from '../components/animations/RoboDogAnimation';
-import NeuralCoreAnimation from '../components/animations/NeuralCoreAnimation';
+import RoboDog from '../components/RoboDog';
+import NeuralCore from '../components/NeuralCore';
 import { messageApi } from '../services/api';
 import { isDemoMode, socketUrl } from '../services/runtimeConfig';
 
@@ -187,11 +187,11 @@ export default function SecureChat() {
         <BlockchainVerification txHash={lastTx?.blockchainTxHash} status={lastTx?.verificationStatus} />
         <div className="panel p-3">
           <p className="mb-2 text-xs uppercase tracking-wide text-cyber-muted">Chat Security Assistant</p>
-          <RoboDogAnimation compact />
+          <RoboDog compact state="idle" />
         </div>
         <div className="panel p-3">
           <p className="mb-2 text-xs uppercase tracking-wide text-cyber-muted">AI Copilot Core</p>
-          <NeuralCoreAnimation compact />
+          <NeuralCore compact state="idle" />
         </div>
       </div>
     </div>

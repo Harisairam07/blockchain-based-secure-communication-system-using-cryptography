@@ -1,0 +1,360 @@
+.john-dog-shell {
+  --john-idle: #00ff88;
+  --john-active: #00bfff;
+  --john-speaking: #ffd700;
+  --john-alert: #ff2222;
+  --john-locked: #444444;
+  position: relative;
+  display: grid;
+  gap: 8px;
+  justify-items: center;
+  min-height: 210px;
+  padding: 8px;
+}
+
+.john-dog-compact {
+  min-height: 150px;
+  transform: scale(0.86);
+  transform-origin: center;
+}
+
+.john-dog-stage {
+  position: relative;
+  width: 196px;
+  height: 148px;
+  border-radius: 10px;
+  background: radial-gradient(circle at 50% 88%, rgba(0, 191, 255, 0.22), rgba(10, 15, 26, 0.08) 66%);
+  overflow: visible;
+  transition: filter 0.4s ease, transform 0.4s ease;
+}
+
+.john-dog-clickable {
+  cursor: pointer;
+}
+
+.john-dog-tag {
+  position: absolute;
+  top: -6px;
+  left: 12px;
+  padding: 3px 8px;
+  border-radius: 8px;
+  border: 1px solid rgba(84, 228, 255, 0.35);
+  background: rgba(6, 12, 24, 0.8);
+  color: #89e9ff;
+  font-size: 10px;
+  font-family: Orbitron, Rajdhani, sans-serif;
+}
+
+.john-dog-ring {
+  position: absolute;
+  inset: 16px 22px 24px;
+  border-radius: 999px;
+  border: 1px dashed rgba(0, 191, 255, 0.58);
+  animation: johnDogRingSpin 14s linear infinite;
+}
+
+.john-dog-image {
+  position: absolute;
+  left: 28px;
+  top: 22px;
+  width: 140px;
+  height: auto;
+  object-fit: contain;
+  filter: drop-shadow(0 0 18px rgba(0, 191, 255, 0.2));
+  transition: transform 0.4s ease, filter 0.4s ease;
+}
+
+.john-dog-eye {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  background: #7fe2ff;
+  box-shadow: 0 0 10px rgba(127, 226, 255, 0.9);
+  transition: background 0.4s ease, box-shadow 0.4s ease;
+}
+
+.john-dog-eye-left {
+  left: 69px;
+  top: 55px;
+}
+
+.john-dog-eye-right {
+  left: 93px;
+  top: 55px;
+}
+
+.john-dog-reactor {
+  position: absolute;
+  left: 121px;
+  top: 92px;
+  width: 18px;
+  height: 18px;
+  border-radius: 999px;
+  background: radial-gradient(circle at 45% 40%, rgba(255, 255, 255, 0.95), #00bfff 45%, #065483 100%);
+  box-shadow: 0 0 14px rgba(0, 191, 255, 0.72);
+  transition: background 0.4s ease, box-shadow 0.4s ease;
+}
+
+.john-dog-mouth {
+  position: absolute;
+  left: 83px;
+  top: 75px;
+  width: 22px;
+  height: 5px;
+  transform-origin: center;
+  border-radius: 6px;
+  background: rgba(8, 12, 16, 0.85);
+  border: 1px solid rgba(173, 218, 255, 0.26);
+  transition: transform 0.09s linear;
+}
+
+.john-dog-tail {
+  position: absolute;
+  right: 34px;
+  top: 95px;
+  width: 13px;
+  height: 3px;
+  border-radius: 4px;
+  background: #7a8fa4;
+  transform-origin: left center;
+}
+
+.john-dog-scanner {
+  position: absolute;
+  left: 58px;
+  top: 58px;
+  width: 58px;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, rgba(162, 239, 255, 0.95), transparent);
+  opacity: 0;
+}
+
+.john-dog-badge {
+  position: absolute;
+  right: 8px;
+  top: 8px;
+  font-size: 10px;
+  border-radius: 8px;
+  padding: 3px 6px;
+  border: 1px solid rgba(0, 191, 255, 0.38);
+  background: rgba(8, 16, 28, 0.86);
+  color: #cbf3ff;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.john-dog-badge-alert {
+  color: #ffd2d2;
+  border-color: rgba(255, 34, 34, 0.7);
+  background: rgba(42, 8, 8, 0.86);
+  animation: johnDogBadgePulse 0.55s ease-in-out infinite;
+}
+
+.john-dog-speech {
+  position: relative;
+  max-width: 220px;
+  border: 1px solid rgba(133, 226, 255, 0.4);
+  border-radius: 8px;
+  padding: 6px 8px;
+  color: #dff8ff;
+  background: rgba(6, 14, 24, 0.85);
+  font-size: 11px;
+  line-height: 1.35;
+  text-align: center;
+}
+
+.john-dog-speech::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: -6px;
+  width: 10px;
+  height: 10px;
+  transform: translateX(-50%) rotate(45deg);
+  border-right: 1px solid rgba(133, 226, 255, 0.4);
+  border-bottom: 1px solid rgba(133, 226, 255, 0.4);
+  background: rgba(6, 14, 24, 0.85);
+}
+
+.john-dog-label {
+  font-family: Orbitron, Rajdhani, sans-serif;
+  color: #9fe9ff;
+  font-size: 12px;
+}
+
+.john-dog-idle .john-dog-image {
+  animation: johnDogLevitate 2.8s ease-in-out infinite;
+}
+
+.john-dog-idle .john-dog-eye {
+  animation: johnDogEyePulse 2.2s ease-in-out infinite;
+}
+
+.john-dog-idle .john-dog-tail {
+  animation: johnDogTailWag 1.4s ease-in-out infinite;
+}
+
+.john-dog-idle .john-dog-reactor {
+  animation: johnDogReactorPulse 1.8s ease-in-out infinite;
+}
+
+.john-dog-listening .john-dog-image {
+  transform: rotate(7deg) translateY(-2px);
+}
+
+.john-dog-listening .john-dog-eye {
+  background: #ecfbff;
+  box-shadow: 0 0 16px rgba(185, 245, 255, 1);
+  animation: johnDogEyeTrack 0.8s linear infinite;
+}
+
+.john-dog-listening .john-dog-reactor {
+  background: radial-gradient(circle at 45% 40%, rgba(255, 255, 255, 0.95), #34ffae 45%, #0b5c3f 100%);
+  box-shadow: 0 0 15px rgba(0, 255, 136, 0.85);
+  animation: johnDogReactorPulse 0.6s ease-in-out infinite;
+}
+
+.john-dog-listening .john-dog-scanner {
+  opacity: 1;
+  animation: johnDogScan 1s linear infinite;
+}
+
+.john-dog-listening .john-dog-ring {
+  border-color: rgba(85, 255, 188, 0.75);
+  animation-duration: 2.4s;
+}
+
+.john-dog-processing .john-dog-image {
+  transform: translateY(-4px);
+  filter: drop-shadow(0 0 24px rgba(0, 191, 255, 0.34)) brightness(1.06);
+}
+
+.john-dog-processing .john-dog-eye {
+  background: #37d0ff;
+  box-shadow: 0 0 14px rgba(55, 208, 255, 0.95);
+  animation: johnDogEyePulse 0.7s ease-in-out infinite;
+}
+
+.john-dog-processing .john-dog-stage::after {
+  content: "0101 1100 1001 0101";
+  position: absolute;
+  inset: 24px 14px;
+  color: rgba(118, 203, 255, 0.24);
+  font-family: "JetBrains Mono", monospace;
+  font-size: 9px;
+  letter-spacing: 1px;
+  animation: johnDogBinaryDrop 1.9s linear infinite;
+  pointer-events: none;
+}
+
+.john-dog-speaking .john-dog-reactor {
+  background: radial-gradient(circle at 45% 40%, rgba(255, 255, 255, 0.95), #ffd700 45%, #946c0a 100%);
+  box-shadow: 0 0 16px rgba(255, 215, 0, 0.75);
+  animation: johnDogReactorPulse 0.45s ease-in-out infinite;
+}
+
+.john-dog-speaking .john-dog-eye {
+  animation: johnDogEyePulse 0.55s ease-in-out infinite;
+}
+
+.john-dog-speaking .john-dog-tail {
+  animation: johnDogTailWag 0.65s ease-in-out infinite;
+}
+
+.john-dog-speaking .john-dog-image {
+  filter: drop-shadow(0 0 20px rgba(255, 215, 0, 0.38));
+}
+
+.john-dog-alert .john-dog-image {
+  transform: translateY(-6px) scale(1.02);
+  animation: johnDogShake 0.22s linear infinite;
+}
+
+.john-dog-alert .john-dog-eye,
+.john-dog-alert .john-dog-reactor {
+  background: #ff2d2d;
+  box-shadow: 0 0 18px rgba(255, 45, 45, 1);
+}
+
+.john-dog-alert .john-dog-ring {
+  border-color: rgba(255, 45, 45, 0.85);
+  animation-duration: 0.9s;
+}
+
+.john-dog-alert .john-dog-stage {
+  box-shadow: inset 0 0 0 1px rgba(255, 45, 45, 0.38), inset 0 0 28px rgba(255, 45, 45, 0.22);
+}
+
+.john-dog-locked .john-dog-stage {
+  filter: grayscale(1) brightness(0.7);
+}
+
+.john-dog-locked .john-dog-image {
+  animation: none;
+  transform: translateY(6px);
+}
+
+.john-dog-locked .john-dog-eye,
+.john-dog-locked .john-dog-reactor,
+.john-dog-locked .john-dog-tail,
+.john-dog-locked .john-dog-ring,
+.john-dog-locked .john-dog-scanner {
+  animation: none;
+  opacity: 0.25;
+  box-shadow: none;
+}
+
+@keyframes johnDogRingSpin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes johnDogLevitate {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
+}
+
+@keyframes johnDogTailWag {
+  0%, 100% { transform: rotate(12deg); }
+  50% { transform: rotate(-18deg); }
+}
+
+@keyframes johnDogEyePulse {
+  0%, 100% { opacity: 0.6; }
+  50% { opacity: 1; }
+}
+
+@keyframes johnDogReactorPulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.2); }
+}
+
+@keyframes johnDogScan {
+  from { transform: translateX(-10px); opacity: 0; }
+  25% { opacity: 1; }
+  to { transform: translateX(52px); opacity: 0; }
+}
+
+@keyframes johnDogEyeTrack {
+  0%, 100% { transform: translateX(0); }
+  50% { transform: translateX(2px); }
+}
+
+@keyframes johnDogBinaryDrop {
+  from { transform: translateY(-8px); opacity: 0; }
+  30% { opacity: 1; }
+  to { transform: translateY(12px); opacity: 0; }
+}
+
+@keyframes johnDogShake {
+  0%, 100% { transform: translateX(0) translateY(-6px) scale(1.02); }
+  25% { transform: translateX(-1.5px) translateY(-6px) scale(1.02); }
+  75% { transform: translateX(1.5px) translateY(-6px) scale(1.02); }
+}
+
+@keyframes johnDogBadgePulse {
+  0%, 100% { opacity: 0.6; }
+  50% { opacity: 1; }
+}

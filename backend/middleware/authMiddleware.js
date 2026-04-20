@@ -5,14 +5,30 @@ function getDefaultAdminEmail() {
   return (process.env.DEFAULT_ADMIN_EMAIL || 'admin@gmail.com').toLowerCase();
 }
 
+function normalizeBearerToken(value) {
+  if (!value) return null;
+  let token = String(value).trim();
+
+  if (token.startsWith('Bearer ')) {
+    token = token.slice(7).trim();
+  }
+
+  if ((token.startsWith('"') && token.endsWith('"')) || (token.startsWith("'") && token.endsWith("'"))) {
+    token = token.slice(1, -1).trim();
+  }
+
+  if (!token || token === 'null' || token === 'undefined') return null;
+  return token;
+}
+
 async function authMiddleware(req, res, next) {
   try {
     const authHeader = req.headers.authorization;
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    const token = normalizeBearerToken(authHeader);
+    if (!token) {
       return res.status(401).json({ error: 'Unauthorized' });
     }
 
-    const token = authHeader.split(' ')[1];
     const payload = jwt.verify(token, process.env.JWT_SECRET);
     const user = await User.findById(payload.userId).select('-passwordHash');
 
@@ -35,7 +51,13 @@ async function authMiddleware(req, res, next) {
     req.user = user;
     next();
   } catch (error) {
-    return res.status(401).json({ error: 'Token verification failed' });
+    if (error?.name === 'TokenExpiredError') {
+      return res.status(401).json({ error: 'Token expired. Please login again.' });
+    }
+    if (error?.name === 'JsonWebTokenError') {
+      return res.status(401).json({ error: 'Invalid token' });
+    }
+    return res.status(401).json({ error: 'Token verification failed', details: error.message });
   }
 }
 

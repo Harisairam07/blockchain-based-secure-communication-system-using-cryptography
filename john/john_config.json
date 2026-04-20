@@ -1,0 +1,12 @@
+{
+  "name": "JOHN",
+  "full_name": "Just Operational Human Network",
+  "owner": "Sir",
+  "voice_rate": 175,
+  "voice_volume": 1.0,
+  "wake_word": "john",
+  "theme_color": "#00BFFF",
+  "alert_color": "#FF4444",
+  "personality": "jarvis",
+  "blockchain_monitor_interval": 30
+}

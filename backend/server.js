@@ -16,10 +16,12 @@ const fileRoutes = require('./routes/fileRoutes');
 const blockchainRoutes = require('./routes/blockchainRoutes');
 const adminRoutes = require('./routes/adminRoutes');
 const aiRoutes = require('./routes/aiRoutes');
+const johnRoutes = require('./routes/johnRoutes');
 const { logAttack } = require('./services/attackDetectionService');
 const { getSecurityState } = require('./services/securityStateService');
 const { emitRealtimeMetrics } = require('./services/realtimeMetricsService');
 const { ensureDefaultAdmin } = require('./services/seedService');
+const { createJohnAssistant } = require('../john');
 
 function getAllowedOrigins() {
   const fallback = [
@@ -111,7 +113,7 @@ app.use('/api', (req, res, next) => {
   }
 
   const path = req.path || '';
-  const allowlist = ['/auth/login', '/auth/me', '/auth/register'];
+  const allowlist = ['/auth/login', '/auth/me', '/auth/register', '/john'];
   if (allowlist.some((p) => path.startsWith(p))) {
     return next();
   }
@@ -138,6 +140,7 @@ app.use('/api/file', fileRoutes);
 app.use('/api/blockchain', blockchainRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/ai', aiRoutes);
+app.use('/api/john', johnRoutes);
 
 app.use((error, req, res, next) => {
   res.status(500).json({ error: 'Internal server error', details: error.message });
@@ -172,6 +175,9 @@ connectToMongo()
     server.listen(PORT, () => {
       console.log(`Secure Communication API running at http://localhost:${PORT}`);
     });
+
+    const johnAssistant = createJohnAssistant();
+    johnAssistant.start({ io });
 
     setInterval(() => {
       emitRealtimeMetrics(io).catch(() => null);

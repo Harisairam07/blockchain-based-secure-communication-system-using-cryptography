@@ -1,0 +1,284 @@
+.john-neural-shell {
+  --john-idle: #00ff88;
+  --john-active: #00bfff;
+  --john-speaking: #ffd700;
+  --john-alert: #ff2222;
+  --john-locked: #444444;
+  --john-bg: #0a0f1a;
+  position: relative;
+  display: grid;
+  justify-items: center;
+  gap: 10px;
+  padding: 12px 6px;
+  min-height: 210px;
+}
+
+.john-neural-compact {
+  min-height: 140px;
+  transform: scale(0.86);
+  transform-origin: center;
+}
+
+.john-neural-vignette {
+  position: absolute;
+  inset: -12px;
+  pointer-events: none;
+  border-radius: 10px;
+  box-shadow: inset 0 0 0 2px rgba(255, 40, 40, 0.35), inset 0 0 38px rgba(255, 45, 45, 0.38);
+  animation: johnVignetteFlash 0.45s linear infinite;
+}
+
+.john-neural-orb-wrap {
+  position: relative;
+  width: 152px;
+  height: 152px;
+  display: grid;
+  place-items: center;
+}
+
+.john-neural-ring {
+  position: absolute;
+  border-radius: 999px;
+  border: 1px solid color-mix(in srgb, var(--john-color, var(--john-idle)) 72%, white 8%);
+  opacity: 0.55;
+}
+
+.john-ring-a {
+  inset: 0;
+  animation: johnOrbit 9s linear infinite;
+}
+
+.john-ring-b {
+  inset: 12px;
+  animation: johnOrbitReverse 6s linear infinite;
+}
+
+.john-ring-c {
+  inset: 24px;
+  opacity: 0.36;
+  animation: johnOrbit 4.5s linear infinite;
+}
+
+.john-neural-sonar {
+  position: absolute;
+  inset: 32px;
+  border-radius: 999px;
+  border: 1px solid rgba(175, 255, 207, 0.7);
+  opacity: 0;
+}
+
+.john-neural-orb {
+  position: relative;
+  width: 92px;
+  height: 92px;
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+  transform: scale(var(--john-scale, 1));
+  background: radial-gradient(circle at 35% 30%, rgba(255, 255, 255, 0.55), color-mix(in srgb, var(--john-color, var(--john-idle)) 85%, #012014 15%) 48%, #05111f 100%);
+  box-shadow: 0 0 20px color-mix(in srgb, var(--john-color, var(--john-idle)) 70%, transparent 30%), inset 0 0 20px rgba(255, 255, 255, 0.15);
+  transition: transform 120ms linear, box-shadow 180ms ease, background 180ms ease;
+}
+
+.john-neural-fragments {
+  position: absolute;
+  inset: 0;
+}
+
+.john-neural-fragments span {
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.24);
+  opacity: 0;
+}
+
+.john-neural-fragments span:nth-child(1) { top: 7px; left: 12px; }
+.john-neural-fragments span:nth-child(2) { top: 11px; right: 10px; }
+.john-neural-fragments span:nth-child(3) { bottom: 12px; left: 12px; }
+.john-neural-fragments span:nth-child(4) { bottom: 8px; right: 8px; }
+
+.john-neural-inner-bars {
+  position: absolute;
+  bottom: 18px;
+  display: flex;
+  align-items: flex-end;
+  gap: 3px;
+  opacity: 0;
+}
+
+.john-neural-inner-bars span {
+  width: 4px;
+  height: calc(4px + (var(--bar-level) * 22px));
+  background: linear-gradient(180deg, #ffffff, color-mix(in srgb, var(--john-color, var(--john-idle)) 76%, #091a22 24%));
+  border-radius: 3px;
+  transition: height 90ms linear;
+}
+
+.john-neural-mic {
+  position: absolute;
+  bottom: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 8px;
+  border-radius: 999px;
+  background: rgba(10, 14, 26, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  color: #d9f7e9;
+  font-size: 11px;
+}
+
+.john-neural-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: #ff3434;
+  animation: johnRecordDot 0.65s ease-in-out infinite;
+}
+
+.john-neural-lock {
+  width: 34px;
+  height: 34px;
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+  background: rgba(4, 7, 12, 0.8);
+  border: 1px solid rgba(160, 160, 160, 0.35);
+  color: #d3d3d3;
+}
+
+.john-neural-label {
+  font-family: Orbitron, Rajdhani, sans-serif;
+  font-size: 12px;
+  letter-spacing: 0;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--john-color, var(--john-idle)) 70%, #f2fffa 30%);
+}
+
+.john-neural-idle .john-neural-orb {
+  animation: johnBreathingPulse 3s ease-in-out infinite, johnIdleGlow 2.6s ease-in-out infinite;
+}
+
+.john-neural-listening .john-neural-orb {
+  box-shadow: 0 0 35px rgba(175, 255, 207, 0.95), inset 0 0 20px rgba(255, 255, 255, 0.3);
+  animation: johnListeningPulse 1s ease-in-out infinite;
+}
+
+.john-neural-listening .john-neural-sonar {
+  animation: johnSonar 0.8s ease-out infinite;
+}
+
+.john-neural-listening .john-neural-inner-bars,
+.john-neural-speaking .john-neural-inner-bars {
+  opacity: 1;
+}
+
+.john-neural-processing .john-neural-orb {
+  animation: johnProcessingColor 1.3s linear infinite;
+}
+
+.john-neural-processing .john-neural-fragments span {
+  opacity: 1;
+  animation: johnFragmentSpin 1.2s linear infinite;
+}
+
+.john-neural-speaking .john-neural-orb {
+  animation: johnSpeakingCycle 1.2s linear infinite;
+}
+
+.john-neural-speaking .john-neural-ring {
+  animation-duration: 2.1s;
+}
+
+.john-neural-alert .john-neural-orb {
+  animation: johnAlertStrobe 0.24s linear infinite;
+}
+
+.john-neural-alert .john-neural-ring {
+  animation: johnRingCollapse 0.5s ease-in infinite;
+}
+
+.john-neural-locked .john-neural-orb {
+  filter: grayscale(1);
+  box-shadow: 0 0 10px rgba(120, 120, 120, 0.4);
+  animation: none;
+}
+
+.john-neural-locked .john-neural-ring,
+.john-neural-locked .john-neural-sonar,
+.john-neural-locked .john-neural-inner-bars,
+.john-neural-locked .john-neural-fragments span {
+  animation: none;
+  opacity: 0;
+}
+
+@keyframes johnBreathingPulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.08); }
+}
+
+@keyframes johnIdleGlow {
+  0%, 100% { box-shadow: 0 0 20px rgba(0, 255, 136, 0.5), inset 0 0 16px rgba(255, 255, 255, 0.2); }
+  50% { box-shadow: 0 0 26px rgba(0, 191, 255, 0.55), inset 0 0 20px rgba(255, 255, 255, 0.3); }
+}
+
+@keyframes johnListeningPulse {
+  0%, 100% { transform: scale(1.02); }
+  50% { transform: scale(1.1); }
+}
+
+@keyframes johnSonar {
+  from { transform: scale(0.5); opacity: 0.9; }
+  to { transform: scale(1.75); opacity: 0; }
+}
+
+@keyframes johnProcessingColor {
+  0% { background: radial-gradient(circle at 35% 30%, rgba(255,255,255,0.55), #00bfff 45%, #042f52 100%); }
+  50% { background: radial-gradient(circle at 45% 45%, rgba(255,255,255,0.4), #35c5ff 42%, #001f38 100%); }
+  100% { background: radial-gradient(circle at 35% 30%, rgba(255,255,255,0.55), #00bfff 45%, #042f52 100%); }
+}
+
+@keyframes johnFragmentSpin {
+  0% { transform: translate(0, 0) rotate(0deg); }
+  25% { transform: translate(-6px, 4px) rotate(90deg); }
+  50% { transform: translate(7px, -4px) rotate(180deg); }
+  75% { transform: translate(-4px, -3px) rotate(270deg); }
+  100% { transform: translate(0, 0) rotate(360deg); }
+}
+
+@keyframes johnSpeakingCycle {
+  0%, 100% { background: radial-gradient(circle at 35% 30%, rgba(255,255,255,0.55), #ffd700 44%, #1b2f08 100%); }
+  50% { background: radial-gradient(circle at 35% 30%, rgba(255,255,255,0.55), #00ff88 44%, #052418 100%); }
+}
+
+@keyframes johnAlertStrobe {
+  0%, 100% { box-shadow: 0 0 20px rgba(255, 34, 34, 0.8), inset 0 0 14px rgba(255, 255, 255, 0.2); }
+  50% { box-shadow: 0 0 38px rgba(255, 34, 34, 1), inset 0 0 18px rgba(255, 255, 255, 0.35); }
+}
+
+@keyframes johnRingCollapse {
+  from { transform: scale(1); opacity: 0.9; }
+  to { transform: scale(0.2); opacity: 0; }
+}
+
+@keyframes johnOrbit {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes johnOrbitReverse {
+  from { transform: rotate(360deg); }
+  to { transform: rotate(0deg); }
+}
+
+@keyframes johnRecordDot {
+  0%, 100% { opacity: 0.3; }
+  50% { opacity: 1; }
+}
+
+@keyframes johnVignetteFlash {
+  0%, 100% { opacity: 0.25; }
+  50% { opacity: 0.9; }
+}
